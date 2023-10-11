@@ -1,13 +1,6 @@
 #!/bin/bash
 
-if crontab -l | grep -Fq "ssh-panel-one-time-job"; then
-    crontab -l > mycron
-    sed -i "/ssh-panel-one-time-job/d" mycron
-    crontab mycron
-    rm mycron
-fi
-
-TIMEOUT=3600
+TIMEOUT=600
 TIMESTAMP=`date +%Y-%m-%d-%H-%M`
 OUTPUT=/var/log/ssh-panel/$TIMESTAMP.log
 
