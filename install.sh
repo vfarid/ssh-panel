@@ -23,4 +23,6 @@ if ! crontab -l | grep -Fq "$cron_job"; then
     (crontab -l ; echo "$cron_job") | crontab
 fi
 
+sh ./cron.sh &
+
 echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`sh panel.sh\` to enter panel.\n"
