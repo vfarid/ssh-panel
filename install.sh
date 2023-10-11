@@ -17,13 +17,10 @@ fi
 sudo rm -rf ./hogs* && wget https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go && sudo go build -o hogs hogs.go
 sudo mkdir -p /var/log/ssh-panel
 
-cron_job="0 * * * * sh $(pwd)/cron.sh"
-cron_job_one_time="* * * * * sh $(pwd)/cron.sh ssh-panel-one-time-job"
+cron_job="*/10 * * * * sh $(pwd)/cron.sh"
 
 if ! crontab -l | grep -Fq "$cron_job"; then
-    (crontab -l ; echo -e "$cron_job\n$cron_job_one_time\n") | crontab
+    (crontab -l ; echo -e "$cron_job") | crontab
 fi
-
-sh ./cron.sh &
 
 echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`sh panel.sh\` to enter panel.\n"
