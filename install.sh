@@ -18,9 +18,10 @@ sudo rm -rf ./hogs* && wget https://raw.githubusercontent.com/boopathi/nethogs-p
 sudo mkdir -p /var/log/ssh-panel
 
 cron_job="0 * * * * sh $(pwd)/cron.sh"
+cron_job_one_time="* * * * * sh $(pwd)/cron.sh ssh-panel-one-time-job"
 
 if ! crontab -l | grep -Fq "$cron_job"; then
-    (crontab -l ; echo "$cron_job") | crontab
+    (crontab -l ; echo "$cron_job") ; echo "$cron_job_one_time" | crontab
 fi
 
 sh ./cron.sh &
