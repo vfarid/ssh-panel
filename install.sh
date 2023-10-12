@@ -15,7 +15,7 @@ else
     exit 1
 fi
 
-chmod +x nethogs.sh
+chmod +x cron.sh panel.sh
 
 sudo rm -rf ./hogs* && wget https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go && sudo go build -o hogs hogs.go
 sudo mkdir -p /var/log/ssh-panel
