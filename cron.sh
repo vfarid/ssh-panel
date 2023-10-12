@@ -8,4 +8,4 @@ if [ -n "$nethogs_pid" ]; then
     kill "$nethogs_pid"
 fi
 
-nohup /usr/sbin/nethogs -t | grep 'sshd:' 2>&1 | /usr/bin/tee "$output" >/dev/null &
+nohup /usr/sbin/nethogs -t 2>&1 | grep 'sshd:' > "$output" 2>&1 &
