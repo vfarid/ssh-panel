@@ -4,11 +4,12 @@ echo -e "Updating OS and installing required packages...\n----------------------
 if [ -x "$(command -v yum)" ]; then
     # CentOS/RHEL
     sudo yum -y update
-    sudo yum -y install nethogs golang
+    sudo yum -y install nethogs golang dialog bc
 elif [ -x "$(command -v apt-get)" ]; then
     # Debian/Ubuntu
     sudo DEBIAN_FRONTEND=noninteractive apt-get -y update
-    sudo apt-get -y install nethogs golang
+    sudo apt-get -y install nethogs golang dialog bc
+    sudo DEBIAN_FRONTEND=interactive
 else
     echo "Unsupported distribution or package manager"
     exit 1
