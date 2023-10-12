@@ -7,8 +7,9 @@ if [ -x "$(command -v yum)" ]; then
     sudo yum -y install nethogs golang
 elif [ -x "$(command -v apt-get)" ]; then
     # Debian/Ubuntu
-    sudo apt-get -y update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get -y update
     sudo apt-get -y install nethogs golang
+    sudo update-alternatives --set editor /bin/nano
 else
     echo "Unsupported distribution or package manager"
     exit 1
