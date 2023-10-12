@@ -167,28 +167,16 @@ while true; do
         --title "SSH User Management" \
         --no-cancel \
         --menu "\nChoose an operation:" 20 60 10 \
-            1 "Manage Users" \
-            2 "Search User" \
-            3 "Statistics" \
-            4 "Create User" \
+            1 "Statistics" \
+            2 "Manage Users" \
+            3 "Create User" \
+            4 "Search User" \
             5 "About" \
             6 "Exit" \
         2>&1 >/dev/tty)
 
     case "$choice" in
-        1) # Manage Users
-            manage_users
-            ;;
-
-        2) # Serach User
-            username=$(dialog --clear --backtitle "$title" \
-                --title "Search User" \
-                --inputbox "Enter Username:" 10 40 2>&1 >/dev/tty)
-            
-            manage_users "$username"
-            ;;
-
-        3) # Statistics
+        1) # Statistics
             choice=$(dialog --clear --backtitle "$title" \
                 --title "Statistics" \
                 --menu "\nChoose an action:" 20 60 5 \
@@ -217,7 +205,11 @@ while true; do
             esac
             ;;
 
-        4) # Create User
+        2) # Manage Users
+            manage_users
+            ;;
+
+        3) # Create User
             username=$(dialog --clear --backtitle "$title" \
                 --title "Create User" \
                 --inputbox "Enter Username:" 10 40 2>&1 >/dev/tty)
@@ -235,6 +227,14 @@ while true; do
             else
                 dialog --clear --backtitle "$title" --title "Error!" --msgbox "\nOperation canceled!" 10 60
             fi
+            ;;
+
+        4) # Serach User
+            username=$(dialog --clear --backtitle "$title" \
+                --title "Search User" \
+                --inputbox "Enter Username:" 10 40 2>&1 >/dev/tty)
+            
+            manage_users "$username"
             ;;
 
         5) # About
