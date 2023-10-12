@@ -14,16 +14,13 @@ else
     exit 1
 fi
 
-export VISUAL=vi
-export EDITOR=vi
-
 sudo rm -rf ./hogs* && wget https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go && sudo go build -o hogs hogs.go
 sudo mkdir -p /var/log/ssh-panel
 
 cron_job="*/10 * * * * sh $(pwd)/cron.sh"
 
-if ! crontab -l | grep -Fq "$cron_job"; then
-    (crontab -l ; echo -e "$cron_job") | crontab
+if ! crontab -l 2>/dev/null | grep -Fq "$cron_job"; then
+    (crontab -l ; echo "$cron_job") | crontab
 fi
 
 echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`sh panel.sh\` to enter panel.\n"
