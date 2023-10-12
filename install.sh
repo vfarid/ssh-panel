@@ -27,3 +27,5 @@ if ! crontab -l 2>/dev/null | grep -Fq "$cron_job"; then
 fi
 
 echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`sh panel.sh\` to enter panel.\n"
+
+sh cron.sh
