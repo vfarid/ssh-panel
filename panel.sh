@@ -4,9 +4,20 @@ version="1.0"
 date="2023-10-10"
 title="SSH TUI Panel v$version"
 
+linux_dist() {
+    if [ -x "$(command -v yum)" ]; then
+        echo "CentOS/RHEL"
+    elif [ -x "$(command -v apt-get)" ]; then
+        echo "Debian/Ubuntu"
+    else
+        echo "Unsupported"
+        exit 1
+    fi
+}
+
 get_users() {
-    local users=$(awk -F: '$3 >= 1000 { print $1 }' /etc/passwd)
-    echo "root $users"
+    echo "root"
+    awk -F: '$3 >= 1000 { print $1 }' /etc/passwd
 }
 
 is_suspended() {
@@ -15,10 +26,10 @@ is_suspended() {
 
     account_status=$(sudo chage -l "$username" 2>/dev/null | grep "Password expires")
 
-    if [[ "$account_status" == *"never"* ]]; then
-        return 1
-    else
+    if [ -z "$(echo "$account_status" | grep "never")" ]; then
         return 0
+    else
+        return 1
     fi
 }
 
@@ -34,9 +45,10 @@ manage_users() {
         done
         users="$filtered_users"
     fi
-    i=1
-    choices=""
-    user_list=()
+    local i=1
+    local choices=""
+    local user_list=""
+
     for user in $users; do
         local text
         if is_suspended "$user"; then
@@ -45,13 +57,15 @@ manage_users() {
             text="$user"
         fi
         choices="$choices $i $text"
-        user_list["$i"]=$user
-        ((i++))
+        user_list="$user_list$user "
+        i=$(($i+1))
     done
+
     choice=$(dialog --clear --backtitle "$title" \
         --title "Non-System Users" \
         --menu "Select username:" 30 60 20 $choices 2>&1 >/dev/tty)
-    username="${user_list[$choice]}"
+
+    username="$(echo "$user_list" | cut -d " " -f "$choice")"
 
     if [ -n "$username" ]; then
         choice=$(dialog --clear --backtitle "$title" \
@@ -65,7 +79,7 @@ manage_users() {
 
         case "$choice" in
             1) # Statistics
-                dialog --clear --backtitle "$title" --msgbox "Statistics of \`$username\`" 10 60
+                user_stats "$username"
                 ;;
             
             2) # Reset Password
@@ -103,8 +117,8 @@ manage_users() {
 }
 
 user_stats() {
-    ./hogs -type=csv /var/log/ssh-panel/* > ./hogs.csv
-    i=1
+    ./hogs -type=csv /var/log/ssh-panel/* > hogs.csv
+    local i=1
     if [ -n "$1" ]; then
         users="$1"
     else
@@ -118,27 +132,35 @@ user_stats() {
     for user in $users; do
         user_upload=0
         user_download=0
-        filtered_data=$(grep ",$user," ./hogs.csv)
+        rm -f temp.csv
+        cat hogs.csv | grep ",$user," > temp.csv
         while IFS=, read -r tmp upload download username path machine; do
             # date=$(echo "$path" | awk -F/ '{print $NF}' | awk -F. '{print $1}' | cut -d "-" -f "1-3")
             if [ -n "$upload" ]; then
-                user_upload=$(bc <<<"$user_upload + ($upload / 1024)")
+                user_upload=$(echo "$user_upload + ($upload / 1024)" | bc)
             fi
             if [ -n "$download" ]; then
-                user_download=$(bc <<<"$user_download + ($download / 1024)")
+                user_download=$(echo "$user_download + ($download / 1024)" | bc)
             fi
-        done <<< "$filtered_data"
+        done < temp.csv
+
         local text
         if is_suspended "$user"; then
             text="$user(suspended)"
         else
             text="$user"
         fi
-        printf " | %4d  |  %-34s |  %'10.0f  |  %'10.0f  |\n" $i $text $user_upload $user_download
-        ((i++))
+
+        user_upload_formatted=$(echo $user_upload | numfmt --grouping)
+        user_download_formatted=$(echo $user_download | numfmt --grouping)
+
+        printf " | %4d  |  %-34s |  %10s  |  %10s  |\n" $i "$text" "$user_upload_formatted" "$user_download_formatted"
+        i=$((i + 1))
     done
+    rm -f temp.csv hogs.csv
     printf " |-------|-------------------------------------|--------------|--------------|\n\n"
-    read -n 1 -s -r -p "Press any key to continue..."
+    echo "Press Enter to continue..."
+    dd bs=1 count=1 2>/dev/null
 }
 
 while true; do
@@ -202,7 +224,11 @@ while true; do
                 --inputbox "Enter Username:" 10 40 2>&1 >/dev/tty)
 
             if [ -n "$username" ]; then
-                sudo adduser "$username" --shell /usr/sbin/nologin
+                if [ linux_dist = "CentOS/RHEL" ]; then
+                    sudo adduser --shell /usr/sbin/nologin "$username"
+                else
+                    sudo adduser --shell /usr/sbin/nologin --no-create-home --disabled-password --gecos "" "$username"
+                fi
                 dialog --clear --backtitle "$title" --title "Success" --msgbox "\nUser \`$username\` created successfully." 10 60
                 clear
                 sudo passwd "$username"
