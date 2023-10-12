@@ -9,11 +9,13 @@ elif [ -x "$(command -v apt-get)" ]; then
     # Debian/Ubuntu
     sudo DEBIAN_FRONTEND=noninteractive apt-get -y update
     sudo apt-get -y install nethogs golang
-    sudo update-alternatives --set editor /bin/nano
 else
     echo "Unsupported distribution or package manager"
     exit 1
 fi
+
+export VISUAL=vi
+export EDITOR=vi
 
 sudo rm -rf ./hogs* && wget https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go && sudo go build -o hogs hogs.go
 sudo mkdir -p /var/log/ssh-panel
