@@ -1,7 +1,11 @@
 #!/bin/bash
 
-TIMEOUT=600
-TIMESTAMP=`date +%Y-%m-%d-%H-%M`
-OUTPUT=/var/log/ssh-panel/$TIMESTAMP.log
+timestamp=`date +%Y-%m-%d-%H-%M`
+output=/var/log/ssh-panel/$timestamp.log
 
-sh -ic "{ stdbuf -oL nethogs -t | grep 'sshd:' &> $OUTPUT; kill 0; } | { sleep $TIMEOUT; kill 0; }" 3>&1 2>/dev/null
+nethogs_pid=$(pgrep nethogs)
+if [ -n "$nethogs_pid" ]; then
+    kill "$nethogs_pid"
+fi
+
+nohup /usr/sbin/nethogs -t | grep 'sshd:' 2>&1 | /usr/bin/tee "$output" >/dev/null &
