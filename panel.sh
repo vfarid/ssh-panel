@@ -16,8 +16,7 @@ linux_dist() {
 }
 
 get_users() {
-    echo "root"
-    awk -F: '$3 >= 1000 { print $1 }' /etc/passwd
+    awk -F: '$3 >= 1000 && $1 != "nobody" { print $1 }' /etc/passwd
 }
 
 is_suspended() {
