@@ -10,7 +10,7 @@ sudo rm -f ssh-panel-install.sh && wget -O ssh-panel-install.sh https://raw.gith
 پس از اتمام نصب، یک فولدر به نام ssh-panel ایجاد گردیده و شما به داخل فولدر هدایت شده اید.
 
 ```bash
-cd ~/ssh-panel && sh panel.sh
+cd ssh-panel && sh panel.sh
 ```
 
 با اجرای دستور بالا، پنل را فعال کرده و با استفاده از گزینه‌های موجود می توانید:
