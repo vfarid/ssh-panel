@@ -193,8 +193,8 @@ while true; do
                 #     ;;
 
                 2) # Clear Statistics
-                    prompt=$(dialog --clear --backtitle "$title" --title "Delete User" \
-                    --inputbox "Enter \`CLEAR\` to confirm:" 10 60 2>&1 >/dev/tty)
+                    prompt=$(dialog --clear --backtitle "$title" --title "Clear Statistics" \
+                        --inputbox "Enter \`CLEAR\` to confirm:" 10 60 2>&1 >/dev/tty)
                     if [ "$prompt" = "CLEAR" ]; then
                         sudo rm -rf /var/log/ssh-panel/*
                         dialog --clear --backtitle "$title" --title "Success" --msgbox "\nStatistics cleared successfully." 10 60
