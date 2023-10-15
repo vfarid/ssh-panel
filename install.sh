@@ -20,6 +20,7 @@ install_panel() {
         (crontab -l ; echo "$cron_job") | crontab
     fi
     sh cron.sh
+    cd ..
     echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`sh panel.sh\` to enter panel.\n"
 }
 
