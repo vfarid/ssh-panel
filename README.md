@@ -3,10 +3,7 @@ A simple Text User-Interface to manage and monitor ssh users.
 
 ## Installation
 ```bash
-sudo rm -rf ssh-panel.zip ./ssh-panel && \
-wget -O ssh-panel.zip https://github.com/vfarid/ssh-panel/archive/main.zip && \
-unzip ssh-panel.zip && mv ssh-panel-main ssh-panel && \
-sudo rm -f ssh-panel.zip && cd ssh-panel && sudo sh install.sh
+sudo rm -f ssh-panel-install.sh && wget -O ssh-panel-install.sh https://raw.githubusercontent.com/vfarid/ssh-panel/main/install.sh && sudo sh ssh-panel-install.sh
 ```
 
 دستور بالا را کپی کرده و پس از لاگین روی ترمینال سرور بر روی مسیر دلخواه (ترجیحا در همان مسیر پیش فرض) اجرا کنید.
