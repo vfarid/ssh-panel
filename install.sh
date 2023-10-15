@@ -10,7 +10,7 @@ install_panel() {
     unzip ssh-panel.zip
     mv ssh-panel-main ssh-panel
     sudo rm -f ssh-panel.zip
-    cd ssh-panel
+    cd ./ssh-panel/
     sudo mkdir -p /var/log/ssh-panel
     chmod +x cron.sh panel.sh
     sudo rm -f hogs hogs.go && wget https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go && sudo go build -o hogs hogs.go
