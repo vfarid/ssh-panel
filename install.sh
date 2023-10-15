@@ -56,7 +56,7 @@ if [ -d "./ssh-panel" ]; then
         --menu "\nChoose an action:" 20 60 5 \
             1 "Upgrade Panel" \
             3 "Remove Existing Panel" \
-            2 "Remove Existing Panel & Stats" \
+            2 "Remove Existing Panel & Statistics" \
             4 "Exit" \
         2>&1 >/dev/tty)
 
