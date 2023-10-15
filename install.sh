@@ -21,7 +21,7 @@ install_panel() {
     fi
     sh cron.sh
     cd ..
-    echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`sh panel.sh\` to enter panel.\n"
+    echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`cd ssh-panel && sh panel.sh\` to enter panel.\n"
 }
 
 remove_panel() {
