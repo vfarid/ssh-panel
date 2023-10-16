@@ -38,12 +38,13 @@ manage_users() {
     if [ -n "$1" ]; then
         filtered_users=""
         for user in $users; do
-            if [[ "$user" == *"$1"* ]]; then
+            if echo "$user" | grep -q "$1"; then
                 filtered_users="$filtered_users $user"
             fi
         done
         users="$filtered_users"
     fi
+    
     local i=1
     local choices=""
     local user_list=""
