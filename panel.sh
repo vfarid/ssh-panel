@@ -1,7 +1,7 @@
 #!/bin/bash
 
-version="1.0"
-date="2023-10-10"
+version="1.1"
+date="2023-10-17"
 title="SSH TUI Panel v$version"
 
 linux_dist() {
