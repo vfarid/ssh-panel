@@ -11,6 +11,7 @@ install_panel() {
     mv ssh-panel-main ssh-panel
     sudo rm -f ssh-panel.zip
     cd ./ssh-panel/
+    curl -s "https://api.github.com/repos/vfarid/ssh-panel/commits/main" | jq -r .sha > version.info
     sudo mkdir -p /var/log/ssh-panel
     chmod +x cron.sh panel.sh
     sudo rm -f hogs hogs.go && wget https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go && sudo go build -o hogs hogs.go
@@ -39,11 +40,11 @@ echo -e "Updating OS and installing required packages...\n----------------------
 if [ -x "$(command -v yum)" ]; then
     # CentOS/RHEL
     sudo yum -y update
-    sudo yum -y install nethogs golang dialog bc coreutils unzip
+    sudo yum -y install nethogs golang dialog bc coreutils unzip curl jq
 elif [ -x "$(command -v apt-get)" ]; then
     # Debian/Ubuntu
     sudo DEBIAN_FRONTEND=noninteractive apt-get -y update
-    sudo apt-get -y install nethogs golang dialog bc coreutils unzip
+    sudo apt-get -y install nethogs golang dialog bc coreutils unzip curl jq
     sudo DEBIAN_FRONTEND=interactive
 else
     echo "Unsupported distribution or package manager"
