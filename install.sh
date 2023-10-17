@@ -8,9 +8,13 @@ install_panel() {
     sudo rm -f ssh-panel.zip
     wget -O ssh-panel.zip https://github.com/vfarid/ssh-panel/archive/main.zip
     unzip ssh-panel.zip
-    mv ssh-panel-main ssh-panel
+    if [ ! -d "ssh-panel" ]; then
+        sudo mkdir ssh-panel
+    fi
+    rm -rf ssh-panel/*
+    mv ssh-panel-main/* ssh-panel/
     sudo rm -f ssh-panel.zip
-    cd ./ssh-panel/
+    cd ssh-panel/
     curl -s "https://api.github.com/repos/vfarid/ssh-panel/commits/main" | jq -r .sha > version.info
     sudo mkdir -p /var/log/ssh-panel
     chmod +x cron.sh panel.sh
@@ -51,7 +55,7 @@ else
     exit 1
 fi
 
-if [ -d "./ssh-panel" ]; then
+if [ -f "./ssh-panel/panel.sh" ]; then
     choice=$(dialog --clear --backtitle "$title" \
         --title "Upgrade/Uninstall Panel" \
         --menu "\nChoose an action:" 20 60 5 \
