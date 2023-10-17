@@ -172,8 +172,8 @@ while true; do
             "M" "Manage Users" \
             "C" "Create User" \
             "F" "Find User" \
+            "U" "Update" \
             "A" "About" \
-            "U" "Update Panel" \
             "Q" "Quit" \
         2>&1 > /dev/tty)
 
@@ -239,12 +239,6 @@ while true; do
             manage_users "$username"
             ;;
 
-        "A") # About
-            dialog --clear --backtitle "$title" \
-            --title "About" \
-            --msgbox "\n$title \n\nLicenced under GPLv3\nby Vahid Farid\n\nRepo: github.com/vfarid/ssh-panel\nTwitter: @vahidfarid" 15 60
-            ;;
-
         "U") # Update Panel
             current_sha=$(cat version.info)
             latest_sha=$(curl -s "https://api.github.com/repos/vfarid/ssh-panel/commits/main" | jq -r .sha)
@@ -269,6 +263,12 @@ while true; do
                     dialog --clear --backtitle "$title" --title "Cancel" --msgbox "\nOperation canceled!" 10 60
                 fi
             fi
+            ;;
+
+        "A") # About
+            dialog --clear --backtitle "$title" \
+            --title "About" \
+            --msgbox "\n$title \n\nLicenced under GPLv3\nby Vahid Farid\n\nRepo: github.com/vfarid/ssh-panel\nTwitter: @vahidfarid" 15 60
             ;;
 
         "Q") # Quit
