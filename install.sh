@@ -26,6 +26,7 @@ install_panel() {
     fi
     sh cron.sh
     cd ..
+    rm -f ssh-panel-install.sh
     echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`cd ssh-panel && sh panel.sh\` to enter the panel.\n"
 }
 
