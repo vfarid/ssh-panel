@@ -18,7 +18,8 @@ install_panel() {
     curl -s "https://api.github.com/repos/vfarid/ssh-panel/commits/main" | jq -r .sha > version.info
     sudo mkdir -p /var/log/ssh-panel
     chmod +x cron.sh panel.sh
-    sudo rm -f hogs hogs.go && wget https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go && sudo go build -o hogs hogs.go
+    wget -O hogs.go https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go
+    sudo go build -o hogs hogs.go
     rm -f hogs.go
     cron_job="*/5 * * * * sh $(pwd)/cron.sh"
     if ! crontab -l 2>/dev/null | grep -Fq "$cron_job"; then
