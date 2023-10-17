@@ -13,6 +13,7 @@ install_panel() {
     fi
     rm -rf ssh-panel/*
     mv ssh-panel-main/* ssh-panel/
+    rm -rf ssh-panel-main
     sudo rm -f ssh-panel.zip
     cd ssh-panel/
     curl -s "https://api.github.com/repos/vfarid/ssh-panel/commits/main" | jq -r .sha > version.info
