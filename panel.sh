@@ -44,7 +44,7 @@ manage_users() {
         done
         users="$filtered_users"
     fi
-    
+
     local i=1
     local choices=""
     local user_list=""
@@ -71,25 +71,25 @@ manage_users() {
         choice=$(dialog --clear --backtitle "$title" \
             --title "Manage User: $username" \
             --menu "\nChoose an action:" 20 60 5 \
-                1 "Statistics" \
-                2 "Reset Password" \
-                3 "Suspend User" \
-                4 "Delete" \
+                "S" "Statistics" \
+                "R" "Reset Password" \
+                "U" "Suspend User" \
+                "D" "Delete" \
             2>&1 >/dev/tty)
 
         case "$choice" in
-            1) # Statistics
+            "S") # Statistics
                 user_stats "$username"
                 ;;
             
-            2) # Reset Password
+            "R") # Reset Password
                 clear
                 echo "Resetting password for \`$username\`"
                 sudo passwd "$username"
                 dialog --clear --backtitle "$title" --title "Success" --msgbox "\nPassword for \`$username\` updated successfully." 10 60
                 ;;
             
-            3) # Suspend User
+            "U") # Suspend User
                 confirmed_username=$(dialog --clear --backtitle "$title" --title "Suspend User" \
                 --inputbox "Enter \`$username\` to confirm:" 10 60 2>&1 >/dev/tty)
 
@@ -101,7 +101,7 @@ manage_users() {
                 fi
                 ;;
             
-            4) # Delete
+            "D") # Delete
                 confirmed_username=$(dialog --clear --backtitle "$title" --title "Delete User" \
                 --inputbox "Enter \`$username\` to confirm:" 10 60 2>&1 >/dev/tty)
 
@@ -168,32 +168,26 @@ while true; do
         --title "SSH User Management" \
         --no-cancel \
         --menu "\nChoose an operation:" 20 60 10 \
-            1 "Statistics" \
-            2 "Manage Users" \
-            3 "Create User" \
-            4 "Search User" \
-            5 "About" \
-            6 "Exit" \
-        2>&1 >/dev/tty)
+            "S" "Statistics" \
+            "M" "Manage Users" \
+            "C" "Create User" \
+            "F" "Find User" \
+            "A" "About" \
+            "U" "Update Panel" \
+            "Q" "Quit" \
+        2>&1 > /dev/tty)
 
     case "$choice" in
-        1) # Statistics
+        "S") # Statistics
             choice=$(dialog --clear --backtitle "$title" \
                 --title "Statistics" \
                 --menu "\nChoose an action:" 20 60 5 \
-                    1 "Per User" \
-                    2 "Clear Statistics" \
-                2>&1 >/dev/tty)
+                    "S" "Statistics / User" \
+                    "C" "Clear Statistics" \
+                2>&1 > /dev/tty)
 
             case "$choice" in
-                1) # Per User
-                    user_stats
-                    ;;
-
-                # 2) # Daily
-                #     ;;
-
-                2) # Clear Statistics
+                "C") # Clear Statistics
                     prompt=$(dialog --clear --backtitle "$title" --title "Clear Statistics" \
                         --inputbox "Enter \`CLEAR\` to confirm:" 10 60 2>&1 >/dev/tty)
                     if [ "$prompt" = "CLEAR" ]; then
@@ -203,14 +197,21 @@ while true; do
                         dialog --clear --backtitle "$title" --title "Cancel" --msgbox "\nOperation canceled!" 10 60
                     fi
                     ;;
+
+                *) # Statistics / User
+                    user_stats
+                    ;;
+
+                # 2) # Daily
+                #     ;;
             esac
             ;;
 
-        2) # Manage Users
+        "M") # Manage Users
             manage_users
             ;;
 
-        3) # Create User
+        "C") # Create User
             username=$(dialog --clear --backtitle "$title" \
                 --title "Create User" \
                 --inputbox "Enter Username:" 10 40 2>&1 >/dev/tty)
@@ -230,21 +231,44 @@ while true; do
             fi
             ;;
 
-        4) # Serach User
+        "F") # Find User
             username=$(dialog --clear --backtitle "$title" \
-                --title "Search User" \
+                --title "Find User" \
                 --inputbox "Enter Username:" 10 40 2>&1 >/dev/tty)
             
             manage_users "$username"
             ;;
 
-        5) # About
+        "A") # About
             dialog --clear --backtitle "$title" \
             --title "About" \
             --msgbox "\n$title \n\nLicenced under GPLv3\nby Vahid Farid\n\nRepo: github.com/vfarid/ssh-panel\nTwitter: @vahidfarid" 15 60
             ;;
 
-        6) # Exit
+        "U") # Update Panel
+            current_sha=$(cat version.info)
+            latest_sha=$(curl -s "https://api.github.com/repos/vfarid/ssh-panel/commits/main" | jq -r .sha)
+
+            if [ "$current_sha" = "$latest_sha" ]; then
+                dialog --clear --backtitle "$title" --title "Up to Date" --msgbox "\nYou already have the latest version." 10 60
+            else
+                prompt=$(dialog --clear --backtitle "$title" --title "Update Panel" \
+                    --inputbox "Enter \`UPDATE\` to confirm:" 10 60 2>&1 >/dev/tty)
+                if [ "$prompt" = "UPDATE" ]; then
+                    cd ..
+                    clear
+                    sudo rm -f ssh-panel-install.sh
+                    wget -O ssh-panel-install.sh https://raw.githubusercontent.com/vfarid/ssh-panel/main/install.sh && rm -rf ssh-panel && sudo sh ssh-panel-install.sh && sudo rm -f ssh-panel-install.sh
+                    dialog --clear --backtitle "$title" --title "Success" --msgbox "\nPanel updated successfully." 10 60
+                    clear
+                    exit
+                else
+                    dialog --clear --backtitle "$title" --title "Cancel" --msgbox "\nOperation canceled!" 10 60
+                fi
+            fi
+            ;;
+
+        "Q") # Quit
             clear
             exit 0
             ;;
