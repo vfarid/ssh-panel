@@ -257,10 +257,13 @@ while true; do
                 if [ "$prompt" = "UPDATE" ]; then
                     cd ..
                     clear
+                    echo "$(pwd)"
+                    exit
                     sudo rm -f ssh-panel-install.sh
-                    wget -O ssh-panel-install.sh https://raw.githubusercontent.com/vfarid/ssh-panel/main/install.sh && rm -rf ssh-panel && sudo sh ssh-panel-install.sh && sudo rm -f ssh-panel-install.sh
+                    wget -O ssh-panel-install.sh https://raw.githubusercontent.com/vfarid/ssh-panel/main/install.sh && rm -rf ssh-panel/* && sudo sh ssh-panel-install.sh && sudo rm -f ssh-panel-install.sh
                     dialog --clear --backtitle "$title" --title "Success" --msgbox "\nPanel updated successfully." 10 60
                     clear
+                    cd ..
                     exit
                 else
                     dialog --clear --backtitle "$title" --title "Cancel" --msgbox "\nOperation canceled!" 10 60
