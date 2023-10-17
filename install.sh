@@ -11,24 +11,24 @@ install_panel() {
     if [ ! -d "ssh-panel" ]; then
         sudo mkdir ssh-panel
     fi
-    rm -rf ssh-panel/*
-    mv ssh-panel-main/* ssh-panel/
-    rm -rf ssh-panel-main
+    sudo rm -rf ssh-panel/*
+    sudo mv ssh-panel-main/* ssh-panel/
+    sudo rm -rf ssh-panel-main
     sudo rm -f ssh-panel.zip
     cd ssh-panel/
     curl -s "https://api.github.com/repos/vfarid/ssh-panel/commits/main" | jq -r .sha > version.info
     sudo mkdir -p /var/log/ssh-panel
-    chmod +x cron.sh panel.sh
+    sudo chmod +x cron.sh panel.sh
     wget -O hogs.go https://raw.githubusercontent.com/boopathi/nethogs-parser/master/hogs.go
     sudo go build -o hogs hogs.go
-    rm -f hogs.go
+    sudo rm -f hogs.go
     cron_job="*/5 * * * * sh $(pwd)/cron.sh"
     if ! crontab -l 2>/dev/null | grep -Fq "$cron_job"; then
         (crontab -l ; echo "$cron_job") | crontab
     fi
-    sh cron.sh
+    sudo sh cron.sh
     cd ..
-    rm -f ssh-panel-install.sh
+    sudo rm -f ssh-panel-install.sh
     echo -e "\n--------------------------------------------------------\nInstallation completed.\nYou may run \`cd ssh-panel && sh panel.sh\` to enter the panel.\n"
 }
 
